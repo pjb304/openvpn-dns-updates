@@ -9,7 +9,6 @@
 
 # replace with a sub-domain of your domain, use a sub-domain to  
 #prevent VPN clients from stealing existing names
-echo "hello" >> /tmp/foo
 
 DOMAIN=vpn.example.net
 
@@ -20,7 +19,6 @@ LOCKFILE="/var/run/$h.lock"
 
 IP="$2"
 CN="$3"
-echo $1 $2 $3 >> /tmp/foo
 case "$1" in
    add|update)
      if [ -z "$IP" -o -z "$CN" ]; then
@@ -81,6 +79,6 @@ esac
 # signal dnsmasq to reread hosts file
 /bin/kill -HUP $(cat /var/run/dnsmasq/dnsmasq.pid)
 
-
+rm -r $t
 [ -x /bin/lock ] && /bin/lock -u "$LOCKFILE"
 exit 0
