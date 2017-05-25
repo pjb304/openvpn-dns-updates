@@ -21,7 +21,10 @@ learn-address /var/lib/openvpn/learn-address.sh
 addn-hosts=/etc/hosts.openvpn-clients4
 addn-hosts=/etc/hosts.openvpn-clients6
 ```
-
+The ttl for entries gathered from local files can be set using the argument below.  Setting this is a balance of load vs responsiveness to change
+```
+local-ttl=5
+'''
 Create the files
 /etc/hosts.openvpn-clients4
 /etc/hosts.openvpn-clients6
