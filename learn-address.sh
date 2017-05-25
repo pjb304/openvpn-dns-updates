@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # openvpn learn-address script to manage a hosts-like file
 # - intended to allow dnsmasq to resolve openvpn clients
 #   addn-hosts=/etc/hosts.openvpn-clients
@@ -12,13 +12,20 @@
 
 DOMAIN=vpn.example.net
 
-HOSTS=/etc/hosts.openvpn-clients
+HOSTSv4=/etc/hosts.openvpn-clients4
+HOSTSv6=/etc/hosts.openvpn-clients6
+IP="$2"
+CN="$3"
+if [[ $IP =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then #regex from http://www.linuxjournal.com/content/validating-ip-address-bash-script
+    HOSTS=$HOSTSv4
+else 
+    HOSTS=$HOSTSv6
+fi
+
 
 h=$(/usr/bin/basename "$HOSTS")
 LOCKFILE="/var/run/$h.lock"
 
-IP="$2"
-CN="$3"
 case "$1" in
    add|update)
      if [ -z "$IP" -o -z "$CN" ]; then
@@ -58,15 +65,14 @@ fi
 case "$1" in
 
    add|update)
-    /usr/bin/awk '  BEGIN{ print "***";if(match("'"$IP"'",/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/)){ipv4=1}}
-$1 == "'"$IP"'" || $1 == "#'"$IP"'"  { if (!m){ print "'"$IP"'\t'"$FQDN"'"; m=1; next }} # This looks for any line which matches either the IP address / commented IP address (this can only happen once)
-match($1, /\#?[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/) && $2 == "'"$FQDN"'" { if (!m && ipv4){ print "'"$IP"'\t'"$FQDN"'"; m=1; next }else{print $0;next}} #Looks for any ipv4 address and the fqdn and updates only if the input is v4
-match($1, /\#?[0-9A-Fa-f:]+/)  && $2 == "'"$FQDN"'" { if (!m && !ipv4){ print "'"$IP"'\t'"$FQDN"'"; m=1; next }else{print $0;next}} #Looks for any ipv6 address and the fqdn and updates only if the input is v6
-{ print }
-END { if (!m) print "'"$IP"'\t'"$FQDN"'"}           # add new address to end
+    /usr/bin/awk '
+         # update/uncomment address|FQDN with new record, drop any duplicates:
+         $1 == "'"$IP"'" || $1 == "#'"$IP"'" || $2 == "'"$FQDN"'" \
+             { if (!m) print "'"$IP"'\t'"$FQDN"'"; m=1; next }
+         { print }
+         END { if (!m) print "'"$IP"'\t'"$FQDN"'" }           # add new address to end
      ' "$HOSTS" > "$t" && cat "$t" > "$HOSTS"
    ;;
-
    delete)
      /usr/bin/awk '
          # no FQDN, comment out all matching addresses (should only be one)
