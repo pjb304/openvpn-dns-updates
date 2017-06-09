@@ -83,7 +83,7 @@ case "$1" in
 
 esac
 # signal dnsmasq to reread hosts file
-/bin/kill -HUP $(cat /var/run/dnsmasq/dnsmasq.pid)
+/var/lib/openvpn/update_dnsmasq.sh
 
 rm -r $t
 [ -x /bin/lock ] && /bin/lock -u "$LOCKFILE"
