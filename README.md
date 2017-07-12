@@ -31,5 +31,11 @@ Create the files
 
 The changer the owner to be nobody:nogroup to allow the update to write to them.
 
+### crontab
+```
+* * * * * /var/lib/openvpn/update_dnsmasq.sh
+```
+
+This is to make dnsmasq refresh the hosts file every minute.  I have not yet worked out how to get openvpn to send the message to dnsmasq as by the point it is calling this script it is running as nobody:nogroup so does not have the required permissions.  If you get this working please submit a pull request so I can add it in.
 
 

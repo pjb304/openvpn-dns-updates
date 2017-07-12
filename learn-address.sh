@@ -82,9 +82,6 @@ case "$1" in
    ;;
 
 esac
-# signal dnsmasq to reread hosts file
-/var/lib/openvpn/update_dnsmasq.sh
-
 rm -r $t
 [ -x /bin/lock ] && /bin/lock -u "$LOCKFILE"
 exit 0

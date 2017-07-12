@@ -1,2 +1,3 @@
 #!/bin/sh
-/bin/kill -HUP $(cat /var/run/dnsmasq/dnsmasq.pid)
+sudo /usr/bin/killall -HUP dnsmasq
+
