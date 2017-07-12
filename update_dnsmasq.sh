@@ -1,3 +1,3 @@
 #!/bin/sh
-sudo /usr/bin/killall -HUP dnsmasq
+/usr/bin/killall -HUP dnsmasq
 
