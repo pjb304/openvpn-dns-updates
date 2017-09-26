@@ -10,7 +10,7 @@ To install place the learn-address.sh file in /var/lib/openvpn (you may have to 
 
 Add the following to the specified files
 
-### /etc/openvpn/server.conf (Or you active server config if elsewhere)
+### /etc/openvpn/server.conf (Or your active server config if elsewhere)
 ```
 learn-address /var/lib/openvpn/learn-address.sh
 ```
