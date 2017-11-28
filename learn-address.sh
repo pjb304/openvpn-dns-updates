@@ -82,6 +82,7 @@ case "$1" in
    ;;
 
 esac
+/usr/bin/killall -HUP dnsmasq
 rm -r $t
 [ -x /bin/lock ] && /bin/lock -u "$LOCKFILE"
 exit 0

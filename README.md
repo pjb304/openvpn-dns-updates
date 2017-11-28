@@ -2,7 +2,9 @@
 
 A script to update a local DNS server (dnsmasq) when a client connects.  Initial version from https://openvpn.net/archive/openvpn-users/2006-10/msg00119.html
 
-This uses a seperate file for IPv4 and IPv6 addresses because if they are in the same file dnsmasq only uses the first one
+This uses a seperate file for IPv4 and IPv6 addresses because if they are in the same file dnsmasq only uses the first one.
+
+Both dnsmasq and openvpn have to be running as the same user.  I create one specially for this.
 
 ## Installation
 
@@ -13,29 +15,28 @@ Add the following to the specified files
 ### /etc/openvpn/server.conf (Or your active server config if elsewhere)
 ```
 learn-address /var/lib/openvpn/learn-address.sh
+user openvpn
+
 ```
 
 
-### /etc/dnsmasq/dnsmasq.conf
+### /etc/dnsmasq.conf
 ```
 addn-hosts=/etc/hosts.openvpn-clients4
 addn-hosts=/etc/hosts.openvpn-clients6
+user=openvpn
 ```
 The ttl for entries gathered from local files can be set using the argument below.  Setting this is a balance of load vs responsiveness to change
 ```
 local-ttl=5
 ```
-Create the files
+Create the files, and change the owner to the same as the user that both openvpn and dnsmasq will run as
+```
 /etc/hosts.openvpn-clients4
 /etc/hosts.openvpn-clients6
-
-The changer the owner to be nobody:nogroup to allow the update to write to them.
-
-### crontab
-```
-* * * * * /var/lib/openvpn/update_dnsmasq.sh
+chown openvpn /etc/hosts.openvpn-clients4
+chown openvpn /etc/hosts.openvpn-clients6
 ```
 
-This is to make dnsmasq refresh the hosts file every minute.  I have not yet worked out how to get openvpn to send the message to dnsmasq as by the point it is calling this script it is running as nobody:nogroup so does not have the required permissions.  If you get this working please submit a pull request so I can add it in.
 
 
