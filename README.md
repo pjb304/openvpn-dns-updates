@@ -21,9 +21,11 @@ user openvpn
 
 
 ### /etc/dnsmasq.conf
+With the options updated depending on what you have chosen else where in the config
 ```
 addn-hosts=/etc/hosts.openvpn-clients4
 addn-hosts=/etc/hosts.openvpn-clients6
+interface=tun0
 user=openvpn
 ```
 The ttl for entries gathered from local files can be set using the argument below.  Setting this is a balance of load vs responsiveness to change
